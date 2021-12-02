@@ -188,7 +188,7 @@ class StatsGen:
             for (length,count) in sorted(self.stats_length.iteritems(), key=operator.itemgetter(1), reverse=True):
                 if self.hiderare and not count*100/self.filter_counter > 0: continue
                 print "[+] %25d: %02d%% (%d)" % (length, count*100/self.filter_counter, count)
-                writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count/self.filter_counter)})
+                writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Character-set:"
         with open('stats-charsets.csv', 'w') as csvfile:
@@ -198,23 +198,27 @@ class StatsGen:
             for (char,count) in sorted(self.stats_charactersets.iteritems(), key=operator.itemgetter(1), reverse=True):
                 if self.hiderare and not count*100/self.filter_counter > 0: continue
                 print "[+] %25s: %02d%% (%d)" % (char, count*100/self.filter_counter, count)
-                writer.writerow({'Charset': (char), 'Count': (count), 'Percent': (count/self.filter_counter)})
-
-        print "\n[*] Password complexity:"
-        print "[+]                     digit: min(%s) max(%s)" % (self.mindigit, self.maxdigit)
-        print "[+]                     lower: min(%s) max(%s)" % (self.minlower, self.maxlower)
-        print "[+]                     upper: min(%s) max(%s)" % (self.minupper, self.maxupper)
-        print "[+]                   special: min(%s) max(%s)" % (self.minspecial, self.maxspecial)
+                writer.writerow({'Charset': (char), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Simple Masks:"
-        for (simplemask,count) in sorted(self.stats_simplemasks.iteritems(), key=operator.itemgetter(1), reverse=True):
-            if self.hiderare and not count*100/self.filter_counter > 0: continue
-            print "[+] %25s: %02d%% (%d)" % (simplemask, count*100/self.filter_counter, count)
+        with open('stats-masks.csv', 'w') as csvfile:
+            fieldnames = ['Mask', 'Count','Percent']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for (simplemask,count) in sorted(self.stats_simplemasks.iteritems(), key=operator.itemgetter(1), reverse=True):
+                if self.hiderare and not count*100/self.filter_counter > 0: continue
+                print "[+] %25s: %02d%% (%d)" % (simplemask, count*100/self.filter_counter, count)
+                writer.writerow({'Mask': (simplemask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Advanced Masks:"
-        for (advancedmask,count) in sorted(self.stats_advancedmasks.iteritems(), key=operator.itemgetter(1), reverse=True):
-            if count*100/self.filter_counter > 0:
-                print "[+] %25s: %02d%% (%d)" % (advancedmask, count*100/self.filter_counter, count)
+        with open('stats-advanced-masks.csv', 'w') as csvfile:
+            fieldnames = ['Advanced-Mask', 'Count','Percent']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for (advancedmask,count) in sorted(self.stats_advancedmasks.iteritems(), key=operator.itemgetter(1), reverse=True):
+                if count*100/self.filter_counter > 0:
+                    print "[+] %25s: %02d%% (%d)" % (advancedmask, count*100/self.filter_counter, count)
+                    writer.writerow({'Advanced-Mask': (simplemask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
             if self.output_file:
                 self.output_file.write("%s,%d\n" % (advancedmask,count))
