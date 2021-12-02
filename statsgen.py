@@ -218,7 +218,7 @@ class StatsGen:
             for (advancedmask,count) in sorted(self.stats_advancedmasks.iteritems(), key=operator.itemgetter(1), reverse=True):
                 if count*100/self.filter_counter > 0:
                     print "[+] %25s: %02d%% (%d)" % (advancedmask, count*100/self.filter_counter, count)
-                    writer.writerow({'Advanced-Mask': (simplemask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
+                    writer.writerow({'Advanced-Mask': (advancedmask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
             if self.output_file:
                 self.output_file.write("%s,%d\n" % (advancedmask,count))
