@@ -15,6 +15,8 @@ import re, operator, string
 from optparse import OptionParser, OptionGroup
 import time
 import csv
+import os
+
 
 
 VERSION = "0.0.3"
@@ -175,13 +177,19 @@ class StatsGen:
                         self.stats_advancedmasks[advancedmask] = 1
 
     def print_stats(self):
+
+        """ Create folder for results. """
+        directory = "./pack-results/"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
         """ Print password statistics. """
 
         print "[+] Analyzing %d%% (%d/%d) of passwords" % (self.filter_counter*100/self.total_counter, self.filter_counter, self.total_counter)
         print "    NOTE: Statistics below is relative to the number of analyzed passwords, not total number of passwords"
         print "\n[*] Length:"
 
-        with open('stats-lenght.csv', 'w') as csvfile:
+        with open('./pack-results/stats-lenght.csv', 'w') as csvfile:
             fieldnames = ['Lenght', 'Count','Percent']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -191,7 +199,7 @@ class StatsGen:
                 writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Character-set:"
-        with open('stats-charsets.csv', 'w') as csvfile:
+        with open('./pack-results/stats-charsets.csv', 'w') as csvfile:
             fieldnames = ['Charset', 'Count','Percent']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -201,7 +209,7 @@ class StatsGen:
                 writer.writerow({'Charset': (char), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Simple Masks:"
-        with open('stats-masks.csv', 'w') as csvfile:
+        with open('./pack-results/stats-masks.csv', 'w') as csvfile:
             fieldnames = ['Mask', 'Count','Percent']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -211,14 +219,14 @@ class StatsGen:
                 writer.writerow({'Mask': (simplemask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Advanced Masks:"
-        with open('stats-advanced-masks.csv', 'w') as csvfile:
+        with open('./pack-results/stats-advanced-masks.csv', 'w') as csvfile:
             fieldnames = ['Advanced-Mask', 'Count','Percent']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for (advancedmask,count) in sorted(self.stats_advancedmasks.iteritems(), key=operator.itemgetter(1), reverse=True):
                 if count*100/self.filter_counter > 0:
                     print "[+] %25s: %02d%% (%d)" % (advancedmask, count*100/self.filter_counter, count)
-                    writer.writerow({'Advanced-Mask': (advancedmask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
+                    writer.writerow({'Advanced-Mask': (simplemask), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
             if self.output_file:
                 self.output_file.write("%s,%d\n" % (advancedmask,count))
