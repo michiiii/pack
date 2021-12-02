@@ -188,7 +188,7 @@ class StatsGen:
             for (length,count) in sorted(self.stats_length.iteritems(), key=operator.itemgetter(1), reverse=True):
                 if self.hiderare and not count*100/self.filter_counter > 0: continue
                 print "[+] %25d: %02d%% (%d)" % (length, count*100/self.filter_counter, count)
-                writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
+                writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count/self.filter_counter)})
 
         print "\n[*] Character-set:"
         for (char,count) in sorted(self.stats_charactersets.iteritems(), key=operator.itemgetter(1), reverse=True):
