@@ -14,6 +14,8 @@ import sys
 import re, operator, string
 from optparse import OptionParser, OptionGroup
 import time
+import csv
+
 
 VERSION = "0.0.3"
 
@@ -178,9 +180,17 @@ class StatsGen:
         print "[+] Analyzing %d%% (%d/%d) of passwords" % (self.filter_counter*100/self.total_counter, self.filter_counter, self.total_counter)
         print "    NOTE: Statistics below is relative to the number of analyzed passwords, not total number of passwords"
         print "\n[*] Length:"
+
+        with open('stats-lenght.csv', 'w', newline='') as csvfile:
+            fieldnames = ['Lenght', 'Count','Percent']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+                    
+
         for (length,count) in sorted(self.stats_length.iteritems(), key=operator.itemgetter(1), reverse=True):
             if self.hiderare and not count*100/self.filter_counter > 0: continue
             print "[+] %25d: %02d%% (%d)" % (length, count*100/self.filter_counter, count)
+            writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count*100/self.filter_counter)})
 
         print "\n[*] Character-set:"
         for (char,count) in sorted(self.stats_charactersets.iteritems(), key=operator.itemgetter(1), reverse=True):
