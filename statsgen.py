@@ -191,9 +191,14 @@ class StatsGen:
                 writer.writerow({'Lenght': (length), 'Count': (count), 'Percent': (count/self.filter_counter)})
 
         print "\n[*] Character-set:"
-        for (char,count) in sorted(self.stats_charactersets.iteritems(), key=operator.itemgetter(1), reverse=True):
-            if self.hiderare and not count*100/self.filter_counter > 0: continue
-            print "[+] %25s: %02d%% (%d)" % (char, count*100/self.filter_counter, count)
+        with open('stats-charsets.csv', 'w') as csvfile:
+            fieldnames = ['Charset', 'Count','Percent']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for (char,count) in sorted(self.stats_charactersets.iteritems(), key=operator.itemgetter(1), reverse=True):
+                if self.hiderare and not count*100/self.filter_counter > 0: continue
+                print "[+] %25s: %02d%% (%d)" % (char, count*100/self.filter_counter, count)
+                writer.writerow({'Charset': (char), 'Count': (count), 'Percent': (count/self.filter_counter)})
 
         print "\n[*] Password complexity:"
         print "[+]                     digit: min(%s) max(%s)" % (self.mindigit, self.maxdigit)
