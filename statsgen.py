@@ -230,6 +230,7 @@ class StatsGen:
 
             if self.output_file:
                 self.output_file.write("%s,%d\n" % (advancedmask,count))
+        print "[*] CSV with final results are saved to: " +  os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == "__main__":
 
